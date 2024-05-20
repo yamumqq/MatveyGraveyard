@@ -1,11 +1,23 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 abstract class Graveyard {
     protected List<String> graves = new ArrayList<>();
     protected List<String> freeGraves = new ArrayList<>();
     protected List<String> floweredGraves = new ArrayList<>();
     protected String watchman;
+
+    static Log GraveyardLog;
+
+    static {
+        try {
+            GraveyardLog = new Log("Graveyard.log", Level.ALL);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Graveyard(String watchman) {
         this.watchman = watchman;
@@ -27,35 +39,35 @@ abstract class Graveyard {
 
     public void plantFlowers(String location) {
         if (isGraveOccupied(location)) {
-            System.out.println("Высаживание цветов на могиле в месте " + location);
+            GraveyardLog.Logger.info("Высаживание цветов на могиле в месте " + location);
             floweredGraves.add(location);
         } else {
-            System.out.println("Извините, выбранное место не занято или не существует.");
+            GraveyardLog.Logger.info("Извините, выбранное место не занято или не существует.");
         }
     }
 
     public void printGraveStatus() {
-        System.out.println("Свободные места: " + freeGraves);
-        System.out.println("Занятые места: " + graves);
-        System.out.println("Места с цветами: " + floweredGraves);
+        GraveyardLog.Logger.info("Свободные места: " + freeGraves);
+        GraveyardLog.Logger.info("Занятые места: " + graves);
+        GraveyardLog.Logger.info("Места с цветами: " + floweredGraves);
     }
 
     public void cleanGrave(String location) {
         if (graves.contains(location)) {
-            System.out.println("Уборка могилы в месте " + location);
+            GraveyardLog.Logger.info("Уборка могилы в месте " + location);
             graves.remove(location);
             freeGraves.add(location);
         } else {
-            System.out.println("Извините, выбранное место не занято или не существует.");
+            GraveyardLog.Logger.info("Извините, выбранное место не занято или не существует.");
         }
     }
 
     public void switchWatchman(String newWatchman) {
         if (!watchman.equals(newWatchman)) {
             watchman = newWatchman;
-            System.out.println("Успех! Прошлый охранник был устранен!!!");
+            GraveyardLog.Logger.info("Успех! Прошлый охранник был устранен!!!");
         } else {
-            System.out.println("Вы не можете заменить охранника на него самого");
+            GraveyardLog.Logger.info("Вы не можете заменить охранника на него самого");
         }
     }
 

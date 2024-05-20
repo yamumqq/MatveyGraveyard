@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Level;
 
 public class Cemetery extends Graveyard {
 
@@ -6,6 +8,15 @@ public class Cemetery extends Graveyard {
         super(watchman);
     }
 
+    static Log CemeteryLog;
+
+    static {
+        try {
+            CemeteryLog = new Log("Cemetery.log", Level.ALL);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void buryPerson(String name, String location) {
         if (freeGraves.contains(location)) {
@@ -13,7 +24,7 @@ public class Cemetery extends Graveyard {
             graves.add(location);
             freeGraves.remove(location);
         } else {
-            System.out.println("Извините, выбранное место уже занято. Пожалуйста, выберите другое место для захоронения.");
+            CemeteryLog.Logger.info("Извините, выбранное место уже занято. Пожалуйста, выберите другое место для захоронения.");
         }
     }
 
@@ -21,9 +32,9 @@ public class Cemetery extends Graveyard {
     public void addGrave(String location) {
         if (!graves.contains(location) && !freeGraves.contains(location)) {
             freeGraves.add(location);
-            System.out.println("Могила добавлена в пустые места.");
+            CemeteryLog.Logger.info("Могила добавлена в пустые места.");
         } else {
-            System.out.println("Извините, могила уже существует или занята.");
+            CemeteryLog.Logger.info("Извините, могила уже существует или занята.");
         }
     }
 
@@ -34,7 +45,7 @@ public class Cemetery extends Graveyard {
             freeGraves.add(location);
             graves.remove(location);
         } else {
-            System.out.println("Извините, выбранное место не занято.");
+            CemeteryLog.Logger.info("Извините, выбранное место не занято.");
         }
     }
 
